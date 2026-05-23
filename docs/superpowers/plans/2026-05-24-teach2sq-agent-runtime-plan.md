@@ -27,6 +27,10 @@ Reference links:
 - `shareAI-lab/learn-claude-code`: https://github.com/shareAI-lab/learn-claude-code/tree/main
 - `VILA-Lab/Dive-into-Claude-Code`: https://github.com/VILA-Lab/Dive-into-Claude-Code
 
+Implementation rule:
+
+- Whenever an implementation decision is uncertain around harness architecture, agent loop behavior, tool use, skills, context compression, permissions, memory, task state, recovery, or MCP/plugin direction, first inspect the relevant part of `shareAI-lab/learn-claude-code` before changing Teach2SQ. Do not fill gaps from intuition when the reference project has a comparable mechanism.
+
 Reference modules to keep visible during implementation:
 
 - Agent loop: model decides the next action, harness executes.
