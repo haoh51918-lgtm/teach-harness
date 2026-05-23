@@ -25,17 +25,26 @@ Reference links:
 - `shareAI-lab/learn-claude-code`: https://github.com/shareAI-lab/learn-claude-code/tree/main
 - `VILA-Lab/Dive-into-Claude-Code`: https://github.com/VILA-Lab/Dive-into-Claude-Code
 
-## Superseded Document
+## Replaced Document
 
-This plan supersedes `docs/superpowers/specs/2026-05-23-teach2sq-harness-design.md`.
+This plan distills and replaces the earlier `2026-05-23` CLI-first harness design. The earlier document was removed to keep the documentation tree non-redundant.
 
-The old document was CLI-first and pipeline-shaped. The current direction is:
+The replaced design was CLI-first and pipeline-shaped. The current direction is:
 
 - Agent Runtime first, with CLI and Local Live Service as entrypoints.
 - Open tool choice constrained by Teaching Skills.
 - Local 7x24 student interaction via dev webhook before real Feishu/WeCom deployment.
 - Teacher Dashboard in first version as a local-only read-only view.
 - Student Memory Wiki remains Markdown-first; runtime state and traces are structured artifacts.
+
+Valuable educational requirements preserved from the replaced design:
+
+- Initial subject focus is middle/high-school algebra, functions, and mechanics.
+- Student inputs may include Markdown/JSON text, local image files, and IM image URLs.
+- Vision ingestion must preserve problem text, diagrams, known conditions, goals, LaTeX formulas, units, and student solution steps.
+- Grading must support rubric-based scores when a rubric exists and confidence-based correctness levels when no rubric exists.
+- Outputs must include student-readable Markdown and machine-readable JSON artifacts.
+- Low-confidence observations must stay pending in the Student Memory Wiki until confirmed by future evidence.
 
 ## Domain Language
 
@@ -119,6 +128,41 @@ Student Memory Wiki is not a dump of chat history. It only receives Memory Patch
 
 Runtime Artifacts are not Student Memory. They are operational evidence, model outputs, tool outputs, traces, and task state.
 
+## Student Memory Wiki Layout
+
+The Student Memory Wiki is Markdown-first because it should be readable and editable by a Teacher.
+
+Suggested layout:
+
+```text
+students/
+  <student_id>/
+    profile.md
+    knowledge/
+      algebra-functions.md
+      mechanics.md
+    error-patterns/
+      sign-errors.md
+      unit-dimension-errors.md
+      force-analysis-errors.md
+    events/
+      2026-05-24-001-assignment.md
+    quizzes/
+      2026-05-24-001-transfer-quiz.md
+```
+
+`profile.md` summarizes current level, recent weak points, stable error patterns, explanation preferences, and pending observations.
+
+`knowledge/*.md` tracks topic mastery, such as function graphs, equation transformations, Newton's second law, and force analysis.
+
+`error-patterns/*.md` tracks reusable mistakes, such as sign errors, missing units, treating vectors as scalars, or choosing incorrect force directions.
+
+`events/*.md` stores Learning Events, including input summary, vision ingestion, grading result, confidence, and evidence links.
+
+`quizzes/*.md` stores Transfer Quiz questions. If the student later answers a Transfer Quiz, the same page records the attempt and outcome.
+
+Memory follows a wiki compilation model: raw events are preserved as evidence pages, while durable memory pages are updated only through Memory Patches linked to evidence.
+
 ## File Structure To Create
 
 ```text
@@ -201,6 +245,43 @@ The plan should define Pydantic models for:
 - `LongTaskState`: goal, current status, evidence, pending clarification, completed tool calls, next suggested actions.
 - `MemoryPatch`: target wiki pages, proposed changes, confidence, evidence links, pending or stable classification.
 - `LearningEvent`: structured reference to a completed interaction that can support memory updates.
+- `AssignmentSubmission`: homework evidence identified inside a Student Query, including text, image assets, optional reference answer, and optional rubric.
+- `IngestedProblem`: structured multimodal interpretation of an Assignment Submission, including formulas, units, diagrams, solution steps, confidence, and ambiguities.
+- `SolutionStep`: one semantically meaningful step in a student attempt.
+- `GradingResult`: correctness judgment, rubric score when available, confidence, error locations, explanation, and optional clarification request.
+- `ClarificationRequest`: specific information needed before reliable grading can continue.
+- `QuizSet`: one to three transfer questions with answers, explanations, and the error pattern each question targets.
+
+## Assignment And Grading Semantics
+
+Not every Student Query is an Assignment Submission. The Teaching Agent identifies an Assignment Submission only when the student provides homework evidence that should be inspected.
+
+When a submission includes image assets, `ingest_image_submission` should create an `IngestedProblem` before grading. Vision ingestion should capture:
+
+- Transcribed problem text.
+- Diagram or image description.
+- Known conditions.
+- Target quantity, proof goal, or requested explanation.
+- LaTeX formulas.
+- Student solution steps.
+- Units and dimensions.
+- Confidence scores.
+- Ambiguities that may affect grading.
+
+`grade_attempt` should produce a `GradingResult`.
+
+If a rubric exists, grading may include section scores and a total score. If no rubric exists, grading should avoid fake precision and instead return:
+
+- Correctness level.
+- Confidence.
+- Error locations by Solution Step.
+- Conceptual misunderstanding.
+- Corrected reasoning.
+- Student-facing Markdown feedback.
+
+If a key formula, unit, diagram, or student step is ambiguous enough to change the answer, the agent must issue a Clarification Request instead of confidently grading.
+
+Final student responses should be Markdown. Runtime outputs and tool results should also be preserved as JSON artifacts for replay, evaluation, and future Channel Adapters.
 
 ## Teaching Skills
 
@@ -360,6 +441,16 @@ Minimum views:
 
 The dashboard should not expose destructive actions in the first version.
 
+## Reliability Rules
+
+Reliability has three layers:
+
+1. Schema validation is mandatory for model outputs that feed tool results, memory writes, grading, and quiz generation.
+2. Ambiguity handling must be explicit; the agent should ask for clarification rather than teaching from a misread image or formula.
+3. Memory writes must be conservative; one low-confidence event cannot become a stable long-term student trait.
+
+Schema failures should trigger bounded retries and then produce a failed turn with a clear Teaching Log entry. The runtime should not silently write malformed model output into memory.
+
 ## Implementation Phases
 
 ### Phase 1: Project Skeleton And Domain Docs
@@ -378,7 +469,7 @@ Goal: Create a runnable empty project with the documented boundaries.
 
 Goal: Define the contracts before tool/runtime logic.
 
-- [ ] Implement Pydantic models for Student Query, Image Asset, Agent Turn, Tool Descriptor, Tool Call Record, Teaching Log Entry, Trace Log Entry, Long Task State, Memory Patch, and Learning Event.
+- [ ] Implement Pydantic models for Student Query, Image Asset, Assignment Submission, Ingested Problem, Solution Step, Grading Result, Clarification Request, Quiz Set, Agent Turn, Tool Descriptor, Tool Call Record, Teaching Log Entry, Trace Log Entry, Long Task State, Memory Patch, and Learning Event.
 - [ ] Export JSON schemas for all public contracts.
 - [ ] Add tests for required fields, invalid states, and schema export.
 - [ ] Commit with message: `feat: add runtime schema contracts`.
@@ -533,6 +624,8 @@ Goal: Verify that this is an education harness, not just a chat wrapper.
 - [ ] Add example mechanics assignments.
 - [ ] Add ambiguous image/text cases.
 - [ ] Add expected critical facts for ingestion and grading.
+- [ ] Add expected memory page or error-pattern updates for sample cases.
+- [ ] Add expected Transfer Quiz target misconception for sample cases.
 - [ ] Add eval runner using recorded responses.
 - [ ] Add manual review checklist for teaching quality.
 - [ ] Commit with message: `test: add education harness evals`.
@@ -585,6 +678,7 @@ The first implementation should prefer fake model providers and recorded fixture
 5. Student receives a final response or clarification request.
 6. Student Memory Wiki receives evidence-linked updates only when appropriate.
 7. Teacher Dashboard shows the student, session, Teaching Log, memory update, and trace link.
+8. The same turn produces machine-readable JSON artifacts for replay and a student-readable Markdown response suitable for IM delivery.
 
 ## Explicit Non-Goals For First Version
 
