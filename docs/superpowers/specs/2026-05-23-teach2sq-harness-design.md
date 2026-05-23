@@ -1,7 +1,7 @@
 # Teach2SQ Agent Education Harness Design
 
 Date: 2026-05-23
-Status: Draft for user review
+Status: Superseded by `docs/superpowers/plans/2026-05-24-teach2sq-agent-runtime-plan.md`
 
 ## Purpose
 
