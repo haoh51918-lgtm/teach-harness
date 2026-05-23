@@ -5,8 +5,8 @@ Teach2SQ is an agent education harness for math and physics learning. Its langua
 ## Language
 
 **Agent Education Harness**:
-The operational environment where a teaching agent interprets a student query, chooses allowed education tools, preserves evidence, updates memory, and decides the next teaching action.
-_Avoid_: Fixed grading pipeline, workflow builder
+The operational environment where a teaching model interprets a student query, chooses allowed education tools, preserves evidence, updates memory, and decides the next teaching action.
+_Avoid_: Fixed grading pipeline, deterministic MAS, workflow builder
 
 **Assignment Submission**:
 A student's homework attempt, including image assets, typed notes, optional reference answer, and optional rubric.
@@ -53,7 +53,7 @@ The persisted state of a Long Task, including its goal, progress, evidence, pend
 _Avoid_: Session Summary, Teaching Log
 
 **Teaching Agent**:
-The agent inside the harness that decides which education tools to call in response to a Student Query.
+The model-driven agent inside the harness that decides which education tools to call in response to a Student Query.
 _Avoid_: Grader, chatbot
 
 **Education Tool**:
@@ -67,6 +67,10 @@ _Avoid_: Helper functions, service layer
 **Agent Runtime**:
 The reusable runtime that manages Teaching Agent turns, context assembly, skill loading, tool execution, permissions, artifacts, and recovery for both CLI and Live Session entrypoints.
 _Avoid_: CLI app, bot service
+
+**Deterministic MAS**:
+A fixed multi-agent workflow where named worker agents are routed by hard-coded control flow instead of letting the Teaching Agent choose tools through the Agent Runtime.
+_Avoid_: Architecture target, fallback design
 
 **Teaching Skill**:
 A Markdown behavior policy that constrains how the Teaching Agent uses tools for a class of educational situations, and may reference supporting schemas, prompts, tools, and eval fixtures.
@@ -161,6 +165,10 @@ Domain expert: "No. The Teacher reads the Teaching Log. Developers use the Trace
 Developer: "Should the Teaching Agent always call the same tools in the same order?"
 
 Domain expert: "No. The Teaching Agent has an open tool space for Long Tasks. Teaching Skills constrain how it behaves in educational situations."
+
+Developer: "Should we create separate grader, memory, quiz, and ingestion agents and route between them deterministically?"
+
+Domain expert: "No. That would be a Deterministic MAS. Teach2SQ is an Agent Education Harness: one Teaching Agent reasons through an Agent Runtime and calls Education Tools as needed."
 
 Developer: "Are all Teaching Skills loaded into every turn?"
 

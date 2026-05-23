@@ -19,11 +19,37 @@ This plan intentionally follows the harness ideas from the referenced Claude Cod
 - Skills are behavior policies loaded into the agent context. They constrain tool use and teaching behavior without turning the system into a hard-coded pipeline.
 - Tools are explicit capabilities with schemas, permissions, execution records, and artifacts. They are not informal helper functions.
 - Long tasks need persisted state and recovery. The runtime should not assume a single request finishes every teaching job.
+- Teach2SQ must not degrade into a deterministic MAS. There should not be fixed grader, memory, quiz, and ingestion agents coordinated by hard-coded routing. Those are Education Tools and Teaching Skills inside one Agent Runtime.
+- Model choice belongs in the Teaching Agent loop; deterministic code belongs in harness infrastructure that validates, executes, records, and recovers.
 
 Reference links:
 
 - `shareAI-lab/learn-claude-code`: https://github.com/shareAI-lab/learn-claude-code/tree/main
 - `VILA-Lab/Dive-into-Claude-Code`: https://github.com/VILA-Lab/Dive-into-Claude-Code
+
+Reference modules to keep visible during implementation:
+
+- Agent loop: model decides the next action, harness executes.
+- Tool use: tools expose explicit schemas and deterministic execution.
+- Permission control: side effects pass through gates.
+- Context compression: long interactions are compacted instead of blindly appended.
+- Skill loading: behavior policies are loaded by relevance and tool requirements.
+- Memory: durable observations are separate from raw chat context.
+- Task system: long tasks persist state and recover across turns.
+- MCP/plugin direction: tool contracts should remain externally exposable later.
+
+## Harness Anti-Regression Rules
+
+These rules are architectural constraints, not style preferences:
+
+- Do not create a fixed MAS graph such as `vision agent -> grading agent -> memory agent -> quiz agent`.
+- Do not route Student Queries through hard-coded educational workflows except for validation, safety gates, and local entrypoint normalization.
+- Do not make `grade_attempt`, `apply_memory_patch`, or `generate_transfer_quiz` autonomous agents. They are Education Tools called by the Teaching Agent.
+- Do not let a Channel Adapter decide teaching behavior. It only converts external messages into Student Queries.
+- Do not scatter model prompts across helper functions. Teaching behavior belongs in Teaching Skills and model route contracts.
+- Do not bypass the Tool Runtime for convenience. Tool calls must be schema-validated, permission-checked, artifact-recorded, and trace-logged.
+- Do not turn the Teacher Dashboard into a control plane for approving each action. Teachers review logs and memory changes after the fact in the first version.
+- Any implementation that adds a named worker agent or fixed control graph needs a new ADR explaining why it does not violate `docs/adr/0004-preserve-harness-over-deterministic-mas.md`.
 
 ## Replaced Document
 
@@ -113,6 +139,8 @@ Each Student Query enters the shared Agent Runtime:
 
 The agent may choose tools in an open-ended way, but all tools are bounded by descriptors, schemas, permissions, skills, and artifact contracts.
 
+The runtime loop is the center of the system. Implementers should resist replacing it with a deterministic coordinator that inspects a query and calls a fixed chain of modules. Query classification may help assemble context or suggest skills, but it must not replace Teaching Agent tool choice.
+
 ## State Model
 
 The first version has four distinct state layers:
@@ -172,6 +200,7 @@ docs/
     0001-open-agent-loop-with-teaching-skills.md
     0002-python-core-tools-with-mcp-compatible-contract.md
     0003-shared-agent-runtime-for-cli-and-live-sessions.md
+    0004-preserve-harness-over-deterministic-mas.md
   superpowers/
     plans/
       2026-05-24-teach2sq-agent-runtime-plan.md
@@ -230,6 +259,8 @@ students/
 ```
 
 Implementation may adjust names slightly, but it should preserve these boundaries.
+
+The file structure intentionally does not include an `agents/` package. The project has one Teaching Agent loop in `teach2sq/runtime/agent_loop.py`; domain capabilities live under `teach2sq/tools/` and behavior policies live under `teach2sq/skills/`.
 
 ## Core Schemas
 
@@ -502,6 +533,7 @@ Goal: Load skills like Claude Code-style behavior policies.
 
 Goal: Register and execute Education Tools through descriptors, not ad hoc function calls.
 
+- [ ] Add a test or architecture check that fails if a new `teach2sq/agents/` package is introduced without updating ADR-0004.
 - [ ] Implement tool registry.
 - [ ] Implement permission checks.
 - [ ] Implement tool argument validation.
@@ -558,6 +590,7 @@ Goal: Replace stubs with real first-version behavior.
 
 Goal: Let the Teaching Agent decide what to do from Student Query and current context.
 
+- [ ] Add a regression test proving a query can lead to different tool sequences depending on context, rather than a fixed query-type workflow.
 - [ ] Implement context assembly with stable prefix and dynamic tail.
 - [ ] Implement agent action schema.
 - [ ] Implement loop limit and stop conditions.
@@ -668,6 +701,8 @@ uv run teach2sq eval examples/assignments
 ```
 
 The first implementation should prefer fake model providers and recorded fixtures for automated tests. Real Qwen/DeepSeek calls should be manually runnable and trace-recorded, not required for every test run.
+
+Every phase should also review the Harness Anti-Regression Rules. If a phase adds hard-coded orchestration, named worker agents, or direct model calls outside the Model Router and Tool Runtime, stop and revise the design before continuing.
 
 ## First End-To-End Acceptance Scenario
 
