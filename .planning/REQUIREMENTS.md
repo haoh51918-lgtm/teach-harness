@@ -146,82 +146,82 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | Unmapped | Pending |
-| FOUND-02 | Unmapped | Pending |
-| FOUND-03 | Unmapped | Pending |
-| FOUND-04 | Unmapped | Pending |
-| SCHEMA-01 | Unmapped | Pending |
-| SCHEMA-02 | Unmapped | Pending |
-| SCHEMA-03 | Unmapped | Pending |
-| SCHEMA-04 | Unmapped | Pending |
-| SCHEMA-05 | Unmapped | Pending |
-| SCHEMA-06 | Unmapped | Pending |
-| STATE-01 | Unmapped | Pending |
-| STATE-02 | Unmapped | Pending |
-| STATE-03 | Unmapped | Pending |
-| STATE-04 | Unmapped | Pending |
-| STATE-05 | Unmapped | Pending |
-| SKILL-01 | Unmapped | Pending |
-| SKILL-02 | Unmapped | Pending |
-| SKILL-03 | Unmapped | Pending |
-| SKILL-04 | Unmapped | Pending |
-| SKILL-05 | Unmapped | Pending |
-| TOOL-01 | Unmapped | Pending |
-| TOOL-02 | Unmapped | Pending |
-| TOOL-03 | Unmapped | Pending |
-| TOOL-04 | Unmapped | Pending |
-| TOOL-05 | Unmapped | Pending |
-| MODEL-01 | Unmapped | Pending |
-| MODEL-02 | Unmapped | Pending |
-| MODEL-03 | Unmapped | Pending |
-| MODEL-04 | Unmapped | Pending |
-| MODEL-05 | Unmapped | Pending |
-| MODEL-06 | Unmapped | Pending |
-| MEM-01 | Unmapped | Pending |
-| MEM-02 | Unmapped | Pending |
-| MEM-03 | Unmapped | Pending |
-| MEM-04 | Unmapped | Pending |
-| MEM-05 | Unmapped | Pending |
-| MEM-06 | Unmapped | Pending |
-| EDU-01 | Unmapped | Pending |
-| EDU-02 | Unmapped | Pending |
-| EDU-03 | Unmapped | Pending |
-| EDU-04 | Unmapped | Pending |
-| EDU-05 | Unmapped | Pending |
-| EDU-06 | Unmapped | Pending |
-| EDU-07 | Unmapped | Pending |
-| EDU-08 | Unmapped | Pending |
-| EDU-09 | Unmapped | Pending |
-| AGENT-01 | Unmapped | Pending |
-| AGENT-02 | Unmapped | Pending |
-| AGENT-03 | Unmapped | Pending |
-| AGENT-04 | Unmapped | Pending |
-| AGENT-05 | Unmapped | Pending |
-| AGENT-06 | Unmapped | Pending |
-| ENTRY-01 | Unmapped | Pending |
-| ENTRY-02 | Unmapped | Pending |
-| ENTRY-03 | Unmapped | Pending |
-| ENTRY-04 | Unmapped | Pending |
-| ENTRY-05 | Unmapped | Pending |
-| ENTRY-06 | Unmapped | Pending |
-| DASH-01 | Unmapped | Pending |
-| DASH-02 | Unmapped | Pending |
-| DASH-03 | Unmapped | Pending |
-| DASH-04 | Unmapped | Pending |
-| DASH-05 | Unmapped | Pending |
-| DASH-06 | Unmapped | Pending |
-| EVAL-01 | Unmapped | Pending |
-| EVAL-02 | Unmapped | Pending |
-| EVAL-03 | Unmapped | Pending |
-| EVAL-04 | Unmapped | Pending |
-| DOC-01 | Unmapped | Pending |
-| DOC-02 | Unmapped | Pending |
+| FOUND-01 | Phase 1 | Pending |
+| FOUND-02 | Phase 1 | Pending |
+| FOUND-03 | Phase 1 | Pending |
+| FOUND-04 | Phase 1 | Pending |
+| SCHEMA-01 | Phase 1 | Pending |
+| SCHEMA-02 | Phase 1 | Pending |
+| SCHEMA-03 | Phase 1 | Pending |
+| SCHEMA-04 | Phase 1 | Pending |
+| SCHEMA-05 | Phase 1 | Pending |
+| SCHEMA-06 | Phase 1 | Pending |
+| STATE-01 | Phase 2 | Pending |
+| STATE-02 | Phase 2 | Pending |
+| STATE-03 | Phase 2 | Pending |
+| STATE-04 | Phase 2 | Pending |
+| STATE-05 | Phase 2 | Pending |
+| SKILL-01 | Phase 3 | Pending |
+| SKILL-02 | Phase 3 | Pending |
+| SKILL-03 | Phase 3 | Pending |
+| SKILL-04 | Phase 3 | Pending |
+| SKILL-05 | Phase 3 | Pending |
+| TOOL-01 | Phase 3 | Pending |
+| TOOL-02 | Phase 3 | Pending |
+| TOOL-03 | Phase 3 | Pending |
+| TOOL-04 | Phase 3 | Pending |
+| TOOL-05 | Phase 3 | Pending |
+| MODEL-01 | Phase 4 | Pending |
+| MODEL-02 | Phase 4 | Pending |
+| MODEL-03 | Phase 4 | Pending |
+| MODEL-04 | Phase 4 | Pending |
+| MODEL-05 | Phase 4 | Pending |
+| MODEL-06 | Phase 4 | Pending |
+| MEM-01 | Phase 4 | Pending |
+| MEM-02 | Phase 4 | Pending |
+| MEM-03 | Phase 4 | Pending |
+| MEM-04 | Phase 4 | Pending |
+| MEM-05 | Phase 4 | Pending |
+| MEM-06 | Phase 4 | Pending |
+| EDU-01 | Phase 5 | Pending |
+| EDU-02 | Phase 5 | Pending |
+| EDU-03 | Phase 5 | Pending |
+| EDU-04 | Phase 5 | Pending |
+| EDU-05 | Phase 5 | Pending |
+| EDU-06 | Phase 5 | Pending |
+| EDU-07 | Phase 5 | Pending |
+| EDU-08 | Phase 5 | Pending |
+| EDU-09 | Phase 5 | Pending |
+| AGENT-01 | Phase 6 | Pending |
+| AGENT-02 | Phase 6 | Pending |
+| AGENT-03 | Phase 6 | Pending |
+| AGENT-04 | Phase 6 | Pending |
+| AGENT-05 | Phase 6 | Pending |
+| AGENT-06 | Phase 6 | Pending |
+| ENTRY-01 | Phase 6 | Pending |
+| ENTRY-02 | Phase 6 | Pending |
+| ENTRY-03 | Phase 7 | Pending |
+| ENTRY-04 | Phase 7 | Pending |
+| ENTRY-05 | Phase 7 | Pending |
+| ENTRY-06 | Phase 7 | Pending |
+| DASH-01 | Phase 7 | Pending |
+| DASH-02 | Phase 7 | Pending |
+| DASH-03 | Phase 7 | Pending |
+| DASH-04 | Phase 7 | Pending |
+| DASH-05 | Phase 7 | Pending |
+| DASH-06 | Phase 7 | Pending |
+| EVAL-01 | Phase 8 | Pending |
+| EVAL-02 | Phase 8 | Pending |
+| EVAL-03 | Phase 8 | Pending |
+| EVAL-04 | Phase 8 | Pending |
+| DOC-01 | Phase 8 | Pending |
+| DOC-02 | Phase 8 | Pending |
 
 **Coverage:**
 - v1 requirements: 68 total
-- Mapped to phases: 0
-- Unmapped: 68
+- Mapped to phases: 68
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-26*
-*Last updated: 2026-05-26 after initial definition*
+*Last updated: 2026-05-26 after roadmap creation*
